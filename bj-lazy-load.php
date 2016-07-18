@@ -1,8 +1,10 @@
 <?php
 /*
 Plugin Name: BJ Lazy Load
-Plugin URI: https://wordpress.org/plugins/bj-lazy-load/
-Description: Lazy image loading makes your site load faster and saves bandwidth.
+Plugin URI: https://github.com/deas/bj-lazy-load
+GitHub Plugin https://github.com/deas/bj-lazy-load
+GitHub Branch:     master
+Description: Lazy image loading makes your site load faster and saves bandwidth. Tweaked by Andreas Steffan
 Version: 1.0.6
 Author: Bjørn Johansen
 Author URI: http://twitter.com/bjornjohansen

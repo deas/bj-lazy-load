@@ -174,18 +174,20 @@ class BJLL {
 
 	/**
 	 * Replace images with placeholders in the content
+     *
+     * http://codepen.io/shshaw/post/responsive-placeholder-image
 	 *
 	 * @param string $content The HTML to do the filtering on
 	 * @return string The HTML with the images replaced
 	 */
 	public static function filter_images( $content ) {
-
+        /*
 		$placeholder_url = self::_get_option( 'placeholder_url' );
 		$placeholder_url = apply_filters( 'bjll/placeholder_url', $placeholder_url, 'image' );
 		if ( ! strlen( $placeholder_url ) ) {
 			$placeholder_url = 'data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=';
 		}
-
+        */
 		$match_content = self::_get_content_haystack( $content );
 
 		$matches = array();
@@ -193,9 +195,24 @@ class BJLL {
 		
 		$search = array();
 		$replace = array();
+        $attr_matches = array();
 
-		foreach ( $matches[0] as $imgHTML ) {
-			
+        foreach ( $matches[0] as $imgHTML ) {
+
+            $w = null;
+            $h = null;
+            if (preg_match('/width *= *["\']?(\d+)/i', $imgHTML, $attr_matches)) {
+                $w = $attr_matches[1];
+            } else {
+                $w = "1";
+            }
+            if (preg_match('/height *= *["\']?(\d+)/i', $imgHTML, $attr_matches)) {
+                $h = $attr_matches[1];
+            } else {
+                $h = "1";
+            }
+            $placeholder_url = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 ".$w." ".$h."'%2F%3E";
+
 			// don't to the replacement if the image is a data-uri
 			if ( ! preg_match( "/src=['\"]data:image/is", $imgHTML ) ) {
 

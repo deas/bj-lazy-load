@@ -211,7 +211,7 @@ class BJLL {
             } else {
                 $h = "1";
             }
-            $placeholder_url = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 ".$w." ".$h."'%2F%3E";
+            $placeholder_url = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20".$w."%20".$h."'%2F%3E";
 
 			// don't to the replacement if the image is a data-uri
 			if ( ! preg_match( "/src=['\"]data:image/is", $imgHTML ) ) {

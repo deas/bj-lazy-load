@@ -62,6 +62,7 @@ class BJLL {
 		if ( $enabled ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+            add_action( 'wp_head', array( $this, 'head' ));
 
 			$this->_setup_filtering();
 		}
@@ -83,6 +84,15 @@ class BJLL {
 			}
 		}
 	}
+
+    /**
+     * Enqueue styles
+     */
+    public function head() {
+        ?>
+        <noscript><style type="text/css">.lazy, .lazy-hidden { display:none; }</style></noscript>
+        <?php
+    }
 
 	/**
 	 * Enqueue styles
@@ -188,6 +198,11 @@ class BJLL {
 			$placeholder_url = 'data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=';
 		}
         */
+        $placeholder_pattern = self::_get_option( 'placeholder_url' );
+		if (! strlen( $placeholder_pattern) ) {
+            $placeholder_pattern = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 _WIDTH_ _HEIGHT_'/>";
+		}
+
 		$match_content = self::_get_content_haystack( $content );
 
 		$matches = array();
@@ -211,13 +226,15 @@ class BJLL {
             } else {
                 $h = "1";
             }
-            $placeholder_url = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20".$w."%20".$h."'%2F%3E";
+			$placeholder_url = "data:image/svg+xml;base64,".base64_encode(str_replace("_HEIGHT_", $h, str_replace("_WIDTH_", $w, $placeholder_pattern)));
+            // $placeholder_url = "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20".$w."%20".$h."'%2F%3E";
 
 			// don't to the replacement if the image is a data-uri
 			if ( ! preg_match( "/src=['\"]data:image/is", $imgHTML ) ) {
 
 				// replace the src and add the data-src attribute
-				$replaceHTML = preg_replace( '/<img(.*?)src=/is', '<img$1src="' . esc_attr( $placeholder_url ) . '" data-lazy-type="image" data-lazy-src=', $imgHTML );
+				// $replaceHTML = preg_replace( '/<img(.*?)src=/is', '<img$1src="' . esc_attr( $placeholder_url ) . '" data-lazy-type="image" data-lazy-src=', $imgHTML );
+                $replaceHTML = preg_replace( '/<img(.*?)src=/is', '<img$1src="' . $placeholder_url . '" data-lazy-type="image" data-lazy-src=', $imgHTML );
 				
 				// also replace the srcset (responsive images)
 				$replaceHTML = str_replace( 'srcset', 'data-lazy-srcset', $replaceHTML );
